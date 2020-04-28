@@ -1,20 +1,65 @@
 import 'package:flutter/material.dart';
-import 'package:login_navigation/providers/view_model.dart';
+import 'package:provider/provider.dart';
+import 'package:login_navigation/screens/login.dart';
+import 'package:login_navigation/models/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:login_navigation/providers/UserBloc.dart';
 
-class Home extends StatelessWidget {
-  final ViewModel viewModel;
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
 
-  Home({this.viewModel});
+class _HomeState extends State<Home> {
+
+  SharedPreferences preferences;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    Provider.of<UserBloc>(context, listen: false).authenticate();
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      child: Container(
-        child: Center(
-          child: Text('Home'),
-        ),
-      ),
-      onTap: () => viewModel.changeView(),
-    );
+    return Consumer<UserBloc>(builder: (context, userBloc, child) {
+      if (!userBloc.isLogged) {
+        return Login();
+      } else {
+        return Scaffold(
+          body: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  child: Consumer<UserBloc>(
+                    builder: (context, userBloc, child) {
+                      User user = userBloc.user;
+                      return Text(
+                        'Welcome back, ${user.email}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20.0),
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  child: MaterialButton(
+                    child: Center(
+                      child: Text('LOG OUT'),
+                    ),
+                    onPressed: () {
+                      userBloc.logOut();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    });
   }
 }

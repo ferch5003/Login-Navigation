@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:login_navigation/providers/view_model.dart';
+import 'package:flutter/services.dart';
+import 'package:login_navigation/providers/UserBloc.dart';
 import 'package:login_navigation/screens/login.dart';
 import 'package:login_navigation/screens/signup.dart';
-import 'package:flutter/services.dart';
 
 class Screen extends StatelessWidget {
+
+  Future<Widget> buildPageAsync(Widget widget) async {
+    return Future.microtask(() {
+      return widget;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -13,11 +20,11 @@ class Screen extends StatelessWidget {
         statusBarColor: Colors.transparent,
       ),
       child: ChangeNotifierProvider(
-        create: (context) => ViewModel(),
-        child: Consumer<ViewModel>(
+        create: (context) => UserBloc(),
+        child: Consumer<UserBloc>(
           builder: (context, viewModel, child) {
             return MaterialApp(
-              debugShowCheckedModeBanner: false,
+              debugShowCheckedModeBanner: false,      
               title: 'Login Navigation',
               initialRoute: '/',
               routes: {

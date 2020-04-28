@@ -5,6 +5,8 @@ class CustomInput extends StatelessWidget {
   final Icon prefixIcon;
   final Icon suffixIcon;
   final bool obscureText;
+  final TextInputType keyBoardType;
+  final Function(String) validator;
   final TextEditingController textEditingController;
 
   CustomInput(
@@ -13,32 +15,30 @@ class CustomInput extends StatelessWidget {
       this.prefixIcon,
       this.suffixIcon,
       this.obscureText,
+      this.keyBoardType,
+      this.validator,
       this.textEditingController})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30.0),
-        color: Color(0xFFf2f0f7),
+    return TextFormField(
+      validator: validator,
+      decoration: InputDecoration(
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30.0),
+            borderSide: BorderSide(color: Color(0xFFf2f0f7))),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30.0),
+            borderSide: BorderSide(color: Theme.of(context).primaryColor),
+            gapPadding: 5.0),
+        labelText: '$labelText',
       ),
-      child: TextField(
-        decoration: InputDecoration(
-          prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.0),
-              borderSide: BorderSide(color: Color(0xFFf2f0f7))),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.0),
-              borderSide: BorderSide(color: Theme.of(context).primaryColor),
-              gapPadding: 5.0),
-          labelText: '$labelText',
-        ),
-        controller: textEditingController,
-        obscureText: obscureText,
-      ),
+      controller: textEditingController,
+      keyboardType: keyBoardType,
+      obscureText: obscureText,
     );
   }
 }
