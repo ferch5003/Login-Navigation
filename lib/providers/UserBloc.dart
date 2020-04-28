@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:login_navigation/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +14,6 @@ class UserBloc extends ChangeNotifier {
 
   User get user => _user;
   bool get isLogged => _isLogged;
-  Future<SharedPreferences> get prefs => _prefs;
   TextEditingController get email => _email;
   TextEditingController get password => _password;
   TextEditingController get confirmPassword => _confirmPassword;
@@ -42,10 +43,10 @@ class UserBloc extends ChangeNotifier {
 
   sigIn() async {
     SharedPreferences prefs = await _prefs;
-    final String verifyUser = prefs.getString(email.text) ?? null;
+    Map<String, String> accounts =
+        await json.decode(prefs.getString('accounts'));
 
-    if (verifyUser != null && verifyUser == password.text) {
-      await prefs.setString(email.text, password.text);
+    if (accounts.containsKey(email.text) && accounts[email.text] == password.text) {
       await prefs.setString('email', email.text);
       await prefs.setString('password', email.text);
       await prefs.setBool('isLogged', true);
@@ -71,11 +72,13 @@ class UserBloc extends ChangeNotifier {
 
   signUp() async {
     SharedPreferences prefs = await _prefs;
-    final String verifyUser = prefs.getString(email.text) ?? null;
+    Map<String, String> accounts =
+        await json.decode(prefs.getString('accounts'));
 
-    if (verifyUser == null) {
+    if (!accounts.containsKey(email.text)) {
       if (password.text == confirmPassword.text) {
-        await prefs.setString(email.text, password.text);
+        accounts[email.text] = password.text;
+        await prefs.setString('accounts', json.encode(accounts));
         await prefs.setString('email', email.text);
         await prefs.setString('password', email.text);
         await prefs.setBool('isLogged', true);
