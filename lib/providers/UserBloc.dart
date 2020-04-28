@@ -43,10 +43,11 @@ class UserBloc extends ChangeNotifier {
 
   sigIn() async {
     SharedPreferences prefs = await _prefs;
-    Map<String, String> accounts =
-        await json.decode(prefs.getString('accounts'));
+    Map<String, dynamic> accounts =
+        await jsonDecode(prefs.getString('accounts') ?? '{}');
 
-    if (accounts.containsKey(email.text) && accounts[email.text] == password.text) {
+    if (accounts.containsKey(email.text) &&
+        accounts[email.text] == password.text) {
       await prefs.setString('email', email.text);
       await prefs.setString('password', email.text);
       await prefs.setBool('isLogged', true);
@@ -72,13 +73,12 @@ class UserBloc extends ChangeNotifier {
 
   signUp() async {
     SharedPreferences prefs = await _prefs;
-    Map<String, String> accounts =
-        await json.decode(prefs.getString('accounts'));
+    var accounts = await jsonDecode(prefs.getString('accounts') ?? '{}');
 
     if (!accounts.containsKey(email.text)) {
       if (password.text == confirmPassword.text) {
         accounts[email.text] = password.text;
-        await prefs.setString('accounts', json.encode(accounts));
+        await prefs.setString('accounts', jsonEncode(accounts));
         await prefs.setString('email', email.text);
         await prefs.setString('password', email.text);
         await prefs.setBool('isLogged', true);
