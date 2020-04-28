@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:login_navigation/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +12,7 @@ class UserBloc extends ChangeNotifier {
 
   User get user => _user;
   bool get isLogged => _isLogged;
+  Future<SharedPreferences> get prefs => _prefs;
   TextEditingController get email => _email;
   TextEditingController get password => _password;
   TextEditingController get confirmPassword => _confirmPassword;
@@ -72,28 +71,6 @@ class UserBloc extends ChangeNotifier {
 
   signUp() async {
     SharedPreferences prefs = await _prefs;
-    Map<String,dynamic> accounts = await json.decode(prefs.getString('accounts'));
-
-    if (accounts.containsKey(email.text)) {
-      if (password.text == confirmPassword.text) {
-        accounts[email.text] = password.text;
-        await prefs.setString('accounts', json.encode(accounts));
-        await prefs.setString('email', email.text);
-        await prefs.setString('password', email.text);
-        await prefs.setBool('isLogged', true);
-
-        _user = User(email.text, password.text);
-
-        _isLogged = true;
-
-        clean();
-      }
-    }
-  }
-
-/*
-  signUp() async {
-    SharedPreferences prefs = await _prefs;
     final String verifyUser = prefs.getString(email.text) ?? null;
 
     if (verifyUser == null) {
@@ -111,5 +88,4 @@ class UserBloc extends ChangeNotifier {
       }
     }
   }
-  */
 }
