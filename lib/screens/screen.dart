@@ -20,19 +20,27 @@ class Screen extends StatelessWidget {
         ),
         child: ChangeNotifierProvider(
             create: (context) => UserBloc(),
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Login Navigation',
-              initialRoute: '/',
-              routes: {
-                '/': (context) => Login(),
-                '/signup': (context) => SignUp()
+            child: GestureDetector(
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
               },
-              theme: ThemeData(
-                primaryColor: Color(0xFFf38c02),
-                accentColor: Color(0xFFffbb00),
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Login Navigation',
+                initialRoute: '/',
+                routes: {
+                  '/': (context) => Login(),
+                  '/signup': (context) => SignUp()
+                },
+                theme: ThemeData(
+                  primaryColor: Color(0xFFf38c02),
+                  accentColor: Color(0xFFffbb00),
+                ),
               ),
             )));
   }
-  
 }

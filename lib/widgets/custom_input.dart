@@ -7,6 +7,8 @@ class CustomInput extends StatelessWidget {
   final bool obscureText;
   final TextInputType keyBoardType;
   final Function(String) validator;
+  final Function(String) onFieldSubmitted;
+  final TextInputAction textInputAction;
   final TextEditingController textEditingController;
 
   CustomInput(
@@ -17,6 +19,8 @@ class CustomInput extends StatelessWidget {
       this.obscureText,
       this.keyBoardType,
       this.validator,
+      this.onFieldSubmitted,
+      this.textInputAction,
       this.textEditingController})
       : super(key: key);
 
@@ -39,6 +43,8 @@ class CustomInput extends StatelessWidget {
       controller: textEditingController,
       keyboardType: keyBoardType,
       obscureText: obscureText,
+      textInputAction: textInputAction,
+      onFieldSubmitted: onFieldSubmitted,
     );
   }
 }

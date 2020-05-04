@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:login_navigation/models/user.dart';
 import 'package:login_navigation/repositories/UserRespository.dart';
@@ -16,8 +15,10 @@ class UserBloc extends ChangeNotifier {
   authenticate() async {
     SharedPreferences prefs = await _prefs;
     bool persistedLogIn = prefs.getBool('isLogged') ?? false;
+    String token = prefs.getString('token');
+    bool isValid = await _repository.validToken(token);
 
-    if (persistedLogIn) {
+    if (persistedLogIn && isValid) {
       final String name = prefs.getString('name');
       final String token = prefs.getString('token');
 
@@ -29,7 +30,8 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
-  Future<User> signUp({String email, String password, String name, String username}) async {
+  Future<User> signUp(
+      {String email, String password, String name, String username}) async {
     return _user = await _repository.signUp(email, password, name, username);
   }
 

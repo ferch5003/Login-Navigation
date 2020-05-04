@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:login_navigation/providers/blocs/UserBloc.dart';
 import 'package:login_navigation/screens/home.dart';
-import 'package:login_navigation/screens/widgets/forms.dart';
+import 'package:login_navigation/screens/widgets/loginWidgets.dart';
 import 'package:login_navigation/widgets/screen_gradient.dart';
 import 'package:login_navigation/widgets/custom_card.dart';
 
@@ -27,12 +27,11 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Consumer<UserBloc>(
       builder: (context, userBloc, child) {
-        Size phone = MediaQuery.of(context).size;
-
         if (userBloc.isLogged) {
           return Home();
         } else {
-          final Forms _form = Forms(_formKey, context);
+          final LoginWidgets _loginWidgets = LoginWidgets(_formKey, context);
+          Size phoneSize = MediaQuery.of(context).size;
 
           return Scaffold(
             body: ScreenGradient(
@@ -40,8 +39,8 @@ class _LoginState extends State<Login> {
                 child: Stack(children: <Widget>[
                   SingleChildScrollView(
                     child: CustomCard(
-                      height: phone.height * 0.60,
-                      width: phone.width * 0.80,
+                      height: phoneSize.height * 0.60,
+                      width: phoneSize.width * 0.80,
                       child: Form(
                         key: _formKey,
                         child: Container(
@@ -50,19 +49,19 @@ class _LoginState extends State<Login> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              _form.emailTextField(_emailController),
+                              _loginWidgets.emailTextField(_emailController),
                               SizedBox(
                                 height: 20.0,
                               ),
-                              _form.passTextField(_passwordController),
+                              _loginWidgets.passTextField(_passwordController),
                               SizedBox(
                                 height: 30.0,
                               ),
-                              _form.logInButton(
-                                  email: _emailController.text,
-                                  password: _passwordController.text),
+                              _loginWidgets.logInButton(
+                                  email: _emailController,
+                                  password: _passwordController),
                               SizedBox(height: 15.0),
-                              _form.signUpRedirect(
+                              _loginWidgets.signUpRedirect(
                                   _emailController, _passwordController),
                             ],
                           ),
