@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:login_navigation/screens/login.dart';
 import 'package:login_navigation/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:login_navigation/providers/UserBloc.dart';
+import 'package:login_navigation/providers/blocs/UserBloc.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -38,7 +38,7 @@ class _HomeState extends State<Home> {
                     builder: (context, userBloc, child) {
                       User user = userBloc.user;
                       return Text(
-                        'Welcome back, ${user.email}',
+                        'Welcome back, ${user.name}',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20.0),
                       );

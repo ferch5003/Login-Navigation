@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:login_navigation/widgets/rounded_box.dart';
 import 'package:login_navigation/widgets/custom_input.dart';
-import 'package:login_navigation/providers/UserBloc.dart';
+import 'package:login_navigation/providers/blocs/UserBloc.dart';
 import 'package:provider/provider.dart';
 
 class Forms {
   final GlobalKey<FormState> formKey;
   final BuildContext context;
-  final UserBloc userBloc;
 
-  Forms(this.formKey, this.context, this.userBloc);
+  Forms(this.formKey, this.context);
 
-  Widget emailTextField() {
+  Widget emailTextField(TextEditingController emailController) {
     return RoundedBox(
       color: Color(0xFFf2f0f7),
       child: CustomInput(
@@ -24,26 +23,26 @@ class Forms {
         },
         labelText: 'Email',
         keyBoardType: TextInputType.emailAddress,
-        textEditingController: userBloc.email,
-        prefixIcon: Icon(Icons.account_circle),
+        textEditingController: emailController,
+        prefixIcon: Icon(Icons.email),
         obscureText: false,
       ),
     );
   }
 
-  Widget passTextField() {
+  Widget passTextField(TextEditingController passwordController) {
     return RoundedBox(
       color: Color(0xFFf2f0f7),
       child: CustomInput(
         validator: (password) {
-          Pattern pattern = r'^(\w|[^ ]){6,}$';
+          Pattern pattern = r'^(\w|[^ ]){1,}$';
           RegExp regex = RegExp(pattern);
           if (password.isEmpty) return 'The field is empty';
           if (!regex.hasMatch(password)) return 'Invalid password';
           return null;
         },
         labelText: 'Password',
-        textEditingController: userBloc.password,
+        textEditingController: passwordController,
         prefixIcon: Icon(Icons.lock),
         suffixIcon: Icon(Icons.remove_red_eye),
         obscureText: true,
@@ -51,27 +50,45 @@ class Forms {
     );
   }
 
-  Widget confirmTextField() {
+  Widget nameTextField(TextEditingController nameController) {
     return RoundedBox(
       color: Color(0xFFf2f0f7),
       child: CustomInput(
-        validator: (password) {
-          Pattern pattern = r'^(\w|[^ ]){6,}$';
+        validator: (name) {
+          Pattern pattern = r'^(\w|[^ ]){1,}$';
           RegExp regex = RegExp(pattern);
-          if (password.isEmpty) return 'The field is empty';
-          if (!regex.hasMatch(password)) return 'Invalid password';
+          if (name.isEmpty) return 'The field is empty';
+          if (!regex.hasMatch(name)) return 'Invalid Name';
           return null;
         },
-        labelText: 'Confirm password',
-        textEditingController: userBloc.confirmPassword,
-        prefixIcon: Icon(Icons.lock),
-        suffixIcon: Icon(Icons.remove_red_eye),
-        obscureText: true,
+        labelText: 'Name',
+        textEditingController: nameController,
+        prefixIcon: Icon(Icons.account_circle),
+        obscureText: false,
       ),
     );
   }
 
-  Widget logInButton() {
+  Widget usernameTextField(TextEditingController usernameController) {
+    return RoundedBox(
+      color: Color(0xFFf2f0f7),
+      child: CustomInput(
+        validator: (name) {
+          Pattern pattern = r'^(\w|[^ ]){1,}$';
+          RegExp regex = RegExp(pattern);
+          if (name.isEmpty) return 'The field is empty';
+          if (!regex.hasMatch(name)) return 'Invalid Username';
+          return null;
+        },
+        labelText: 'Username',
+        textEditingController: usernameController,
+        prefixIcon: Icon(Icons.account_circle),
+        obscureText: false,
+      ),
+    );
+  }
+
+  Widget logInButton({String email, String password}) {
     return Builder(
       builder: (context) => RaisedButton(
         splashColor: Theme.of(context).accentColor,
@@ -85,20 +102,26 @@ class Forms {
         )),
         onPressed: () async {
           if (formKey.currentState.validate()) {
-            await userBloc.sigIn();
-
-            if (!userBloc.isLogged) {
-              Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text('Invalid user or password'),
-              ));
-            }
+            await Provider.of<UserBloc>(context, listen: false)
+                .logIn(email: email, password: password)
+                .then((user) {
+              Provider.of<UserBloc>(context, listen: false).setLoggedIn(user);
+              return Container();
+            }).catchError((error) {
+              print("error: " + error.toString());
+              return Container();
+            }).timeout(Duration(seconds: 10), onTimeout: () {
+              print("timer");
+              return Container();
+            });
           }
         },
       ),
     );
   }
 
-  Widget signUpRedirect() {
+  Widget signUpRedirect(TextEditingController emailController,
+      TextEditingController passwordController) {
     return GestureDetector(
       child: RoundedBox(
         child: Center(
@@ -112,13 +135,16 @@ class Forms {
       ),
       onTap: () {
         formKey.currentState.reset();
-        Provider.of<UserBloc>(context, listen: false).clean();
-        Navigator.pushNamed(context, '/signup');
+        Navigator.pushNamed(context, '/signup').then((onValue) {
+          emailController.clear();
+          passwordController.clear();
+        });
       },
     );
   }
 
-  Widget signUpButton() {
+  Widget signUpButton(
+      {String email, String password, String name, String username}) {
     return Builder(
       builder: (context) => RaisedButton(
         splashColor: Theme.of(context).accentColor,
@@ -132,17 +158,21 @@ class Forms {
         )),
         onPressed: () async {
           if (formKey.currentState.validate()) {
-            await Provider.of<UserBloc>(context, listen: false).signUp();
-
-            bool register =
-                Provider.of<UserBloc>(context, listen: false).isLogged;
-
-            if (register) {
-              Navigator.of(context).pop();
-            } else {
-              Scaffold.of(context)
-                  .showSnackBar(SnackBar(content: Text('User is registered')));
-            }
+            await Provider.of<UserBloc>(context, listen: false)
+                .signUp(
+                    email: email,
+                    password: password,
+                    name: name,
+                    username: username)
+                .then((user) {
+              Provider.of<UserBloc>(context, listen: false).setLoggedIn(user);
+              return Container();
+            }).catchError((error) {
+              print("error: " + error.toString());
+              return Container();
+            }).timeout(Duration(seconds: 10), onTimeout: () {
+              return Container();
+            });
           }
         },
       ),
