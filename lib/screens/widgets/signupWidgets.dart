@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_navigation/screens/widgets/fieldWidgets.dart';
-import 'package:login_navigation/widgets/rounded_box.dart';
-import 'package:login_navigation/widgets/custom_input.dart';
+import 'package:login_navigation/widgets/roundedBox.dart';
+import 'package:login_navigation/widgets/customInput.dart';
 import 'package:login_navigation/providers/blocs/UserBloc.dart';
 import 'package:provider/provider.dart';
 

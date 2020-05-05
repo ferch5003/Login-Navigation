@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_navigation/screens/widgets/signupWidgets.dart';
-import 'package:login_navigation/widgets/screen_gradient.dart';
-import 'package:login_navigation/widgets/custom_card.dart';
+import 'package:login_navigation/widgets/screenGradient.dart';
+import 'package:login_navigation/widgets/customCard.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -20,6 +20,16 @@ class _SignUpState extends State<SignUp> {
     _passwordController.clear();
     _nameController.clear();
     _usernameController.clear();
+  }
+
+  @override
+  void dispose(){
+    _emailController.dispose();
+    _passwordController.dispose();
+    _nameController.dispose();
+    _usernameController.dispose();
+
+    super.dispose();
   }
 
   @override

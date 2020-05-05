@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:login_navigation/providers/blocs/UserBloc.dart';
 import 'package:login_navigation/screens/home.dart';
 import 'package:login_navigation/screens/widgets/loginWidgets.dart';
-import 'package:login_navigation/widgets/screen_gradient.dart';
-import 'package:login_navigation/widgets/custom_card.dart';
+import 'package:login_navigation/widgets/screenGradient.dart';
+import 'package:login_navigation/widgets/customCard.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -21,6 +21,14 @@ class _LoginState extends State<Login> {
     super.initState();
 
     Provider.of<UserBloc>(context, listen: false).authenticate();
+  }
+
+  @override
+  void dispose(){
+    _emailController.dispose();
+    _passwordController.dispose();
+
+    super.dispose();
   }
 
   @override

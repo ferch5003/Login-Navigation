@@ -11,15 +11,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
-  SharedPreferences preferences;
-
   @override
   void initState() {
     super.initState();
-    
-    Provider.of<UserBloc>(context, listen: false).authenticate();
 
+    Provider.of<UserBloc>(context, listen: false).authenticate();
   }
 
   @override
@@ -28,23 +24,18 @@ class _HomeState extends State<Home> {
       if (!userBloc.isLogged) {
         return Login();
       } else {
+        User user = userBloc.user;
+
         return Scaffold(
           body: Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  child: Consumer<UserBloc>(
-                    builder: (context, userBloc, child) {
-                      User user = userBloc.user;
-                      return Text(
-                        'Welcome back, ${user.name}',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20.0),
-                      );
-                    },
-                  ),
-                ),
+                    child: Text(
+                  'Welcome back, ${user.name.toString()}',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                )),
                 Container(
                   child: MaterialButton(
                     child: Center(

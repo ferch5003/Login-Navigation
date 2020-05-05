@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_navigation/screens/widgets/fieldWidgets.dart';
-import 'package:login_navigation/widgets/rounded_box.dart';
+import 'package:login_navigation/widgets/roundedBox.dart';
 import 'package:login_navigation/providers/blocs/UserBloc.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +38,10 @@ class LoginWidgets extends FieldWidgets {
               return showDialog(
                   context: context,
                   builder: (context) {
-                    return AlertDialog();
+                    Navigator.pop(context);
+                    return AlertDialog(
+
+                    );
                   });
             }).catchError((error) {
               return showDialog(
@@ -47,7 +50,6 @@ class LoginWidgets extends FieldWidgets {
                     return AlertDialog();
                   });
             }).timeout(Duration(seconds: 10), onTimeout: () {
-              print("timer");
               return Container();
             });
           }

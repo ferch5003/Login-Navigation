@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:login_navigation/widgets/rounded_box.dart';
-import 'package:login_navigation/widgets/custom_input.dart';
+import 'package:login_navigation/widgets/roundedBox.dart';
+import 'package:login_navigation/widgets/customInput.dart';
+import 'package:login_navigation/widgets/customPasswordInput.dart';
 
 class FieldWidgets {
   final BuildContext context;
 
   FieldWidgets(this.context);
+
+  bool _passwordVisible = false;
 
   Widget emailTextField(TextEditingController emailController) {
     return RoundedBox(
@@ -30,7 +33,7 @@ class FieldWidgets {
   Widget passTextField(TextEditingController passwordController) {
     return RoundedBox(
       color: Color(0xFFf2f0f7),
-      child: CustomInput(
+      child: CustomPasswordInput(
         validator: (password) {
           Pattern pattern = r'^(\w|[^ ]){4,}$';
           RegExp regex = RegExp(pattern);
@@ -41,8 +44,6 @@ class FieldWidgets {
         labelText: 'Password',
         textEditingController: passwordController,
         prefixIcon: Icon(Icons.lock),
-        suffixIcon: Icon(Icons.remove_red_eye),
-        obscureText: true,
       ),
     );
   }
