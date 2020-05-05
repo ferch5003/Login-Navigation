@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
         return Scaffold(
           body: Container(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
                     child: Text(

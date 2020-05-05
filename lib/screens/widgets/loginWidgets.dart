@@ -15,6 +15,21 @@ class LoginWidgets extends FieldWidgets {
     passwordController.clear();
   }
 
+  Widget checkRememberMe() {
+    return Consumer<UserBloc>(
+      builder: (context, userBloc, child) {
+        return Row(children: <Widget>[
+          Text('Remember me'),
+          Checkbox(
+              value: userBloc.rememberMe,
+              onChanged: (value) {
+                userBloc.toggleRememberMe(value);
+              }),
+        ]);
+      },
+    );
+  }
+
   Widget logInButton(
       {TextEditingController email, TextEditingController password}) {
     return Builder(
@@ -39,9 +54,7 @@ class LoginWidgets extends FieldWidgets {
                   context: context,
                   builder: (context) {
                     Navigator.pop(context);
-                    return AlertDialog(
-
-                    );
+                    return AlertDialog();
                   });
             }).catchError((error) {
               return showDialog(

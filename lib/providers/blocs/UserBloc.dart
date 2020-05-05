@@ -7,10 +7,17 @@ class UserBloc extends ChangeNotifier {
   final UserRepository _repository = UserRepository();
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool _isLogged = false;
+  bool _rememberMe = false;
   User _user;
 
   User get user => _user;
   bool get isLogged => _isLogged;
+  bool get rememberMe => _rememberMe;
+
+  void toggleRememberMe(bool value){
+    _rememberMe = value;
+    notifyListeners();
+  }
 
   authenticate() async {
     SharedPreferences prefs = await _prefs;
@@ -44,9 +51,10 @@ class UserBloc extends ChangeNotifier {
 
     await prefs.setString('name', user.name);
     await prefs.setString('token', user.token);
-    await prefs.setBool('isLogged', true);
 
-    _isLogged = true;
+    if(_rememberMe){
+      await prefs.setBool('isLogged', true);
+    }
 
     notifyListeners();
   }
@@ -57,6 +65,7 @@ class UserBloc extends ChangeNotifier {
     await prefs.setString('user', '');
     await prefs.setString('token', '');
     await prefs.setBool('isLogged', false);
+    prefs.setBool('rememberMe', false);
 
     _isLogged = false;
 

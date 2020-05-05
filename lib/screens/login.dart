@@ -47,7 +47,7 @@ class _LoginState extends State<Login> {
                 child: Stack(children: <Widget>[
                   SingleChildScrollView(
                     child: CustomCard(
-                      height: phoneSize.height * 0.60,
+                      height: phoneSize.height * 0.65,
                       width: phoneSize.width * 0.80,
                       child: Form(
                         key: _formKey,
@@ -62,6 +62,10 @@ class _LoginState extends State<Login> {
                                 height: 20.0,
                               ),
                               _loginWidgets.passTextField(_passwordController),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              _loginWidgets.checkRememberMe(),
                               SizedBox(
                                 height: 30.0,
                               ),
