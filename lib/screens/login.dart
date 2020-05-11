@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:login_navigation/providers/blocs/UserBloc.dart';
-import 'package:login_navigation/screens/home.dart';
-import 'package:login_navigation/screens/widgets/loginWidgets.dart';
+import 'package:login_navigation/screens/widgets/login/loginWidgets.dart';
 import 'package:login_navigation/widgets/screenGradient.dart';
 import 'package:login_navigation/widgets/customCard.dart';
+import 'package:login_navigation/screens/home.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -18,9 +18,9 @@ class _LoginState extends State<Login> {
 
   @override
   void initState() {
-    super.initState();
-
     Provider.of<UserBloc>(context, listen: false).authenticate();
+
+    super.initState();
   }
 
   @override
@@ -67,7 +67,7 @@ class _LoginState extends State<Login> {
                               ),
                               _loginWidgets.checkRememberMe(),
                               SizedBox(
-                                height: 30.0,
+                                height: 10.0,
                               ),
                               _loginWidgets.logInButton(
                                   email: _emailController,

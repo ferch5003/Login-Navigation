@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:login_navigation/screens/widgets/fieldWidgets.dart';
 import 'package:login_navigation/widgets/roundedBox.dart';
 import 'package:login_navigation/widgets/customInput.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:login_navigation/providers/blocs/UserBloc.dart';
 import 'package:provider/provider.dart';
 
 class SignupWidgets extends FieldWidgets {
   final GlobalKey<FormState> formKey;
+  final RoundedLoadingButtonController _btnController =
+      new RoundedLoadingButtonController();
 
   SignupWidgets(this.formKey, context) : super(context);
 
@@ -19,6 +22,19 @@ class SignupWidgets extends FieldWidgets {
     passwordController.clear();
     nameController.clear();
     usernameController.clear();
+  }
+
+  AlertDialog customAlertDialog(String title, String message) {
+    return AlertDialog(
+      title: Text("$title"),
+      content: Text("$message"),
+      actions: [
+        FlatButton(
+          child: Text('OK'),
+          onPressed: () => Navigator.of(context).pop(),
+        )
+      ],
+    );
   }
 
   Widget nameTextField(TextEditingController nameController) {
@@ -64,50 +80,47 @@ class SignupWidgets extends FieldWidgets {
       TextEditingController password,
       TextEditingController name,
       TextEditingController username}) {
-    return Builder(
-      builder: (context) => RaisedButton(
-        splashColor: Theme.of(context).accentColor,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        color: Theme.of(context).primaryColor,
-        child: Center(
-            child: Text(
-          'SUBMIT',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        )),
-        onPressed: () async {
-          if (formKey.currentState.validate()) {
-            await Provider.of<UserBloc>(context, listen: false)
-                .signUp(
-                    email: email.text,
-                    password: password.text,
-                    name: name.text,
-                    username: username.text)
-                .then((user) {
-              Provider.of<UserBloc>(context, listen: false).setLoggedIn(user);
-              clearAll(email, password, name, username);
-              Navigator.of(context).pop();
-              return showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog();
-                  });
-            }).catchError((error) {
-              return showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog();
-                  });
-            }).timeout(Duration(seconds: 10), onTimeout: () {
-              return showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog();
-                  });
-            });
-          }
-        },
-      ),
+    return RoundedLoadingButton(
+      controller: _btnController,
+      color: Theme.of(context).primaryColor,
+      child: Center(
+          child: Text(
+        'SUBMIT',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      )),
+      onPressed: () async {
+        if (formKey.currentState.validate()) {
+          await Provider.of<UserBloc>(context, listen: false)
+              .signUp(
+                  email: email.text,
+                  password: password.text,
+                  name: name.text,
+                  username: username.text)
+              .then((user) {
+            clearAll(email, password, name, username);
+            _btnController.success();
+            Provider.of<UserBloc>(context, listen: false).setLoggedIn(user);
+            Navigator.of(context).pop();
+          }).catchError((error) {
+            _btnController.reset();
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return customAlertDialog('ERROR', error);
+                });
+          }).timeout(Duration(seconds: 10), onTimeout: () {
+            _btnController.reset();
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return customAlertDialog('ERROR',
+                      'The service is not accesible now (time > 10 seconds), try again');
+                });
+          });
+        } else {
+          _btnController.reset();
+        }
+      },
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:login_navigation/models/user.dart';
+import 'package:login_navigation/models/course.dart';
 import 'package:login_navigation/providers/http/UserApiProvider.dart';
 
 class UserRepository {
@@ -12,4 +13,13 @@ class UserRepository {
       _apiProvider.logIn(email, password);
 
   Future<bool> validToken(String token) => _apiProvider.validToken(token);
+
+  Future<List<Course>> getCourses(String username, String token) =>
+      _apiProvider.getCourses(username, token);
+
+  Future<Course> createCourse(String username, String token) =>
+      _apiProvider.createCourse(username, token);
+
+  Future<bool> restartDB(String username, String token) =>
+      _apiProvider.restartDB(username, token);
 }

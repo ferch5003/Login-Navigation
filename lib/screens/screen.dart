@@ -18,32 +18,30 @@ class Screen extends StatelessWidget {
         value: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
         ),
-        child: ChangeNotifierProvider(
-            create: (context) => UserBloc(),
-            child: AnimatedSwitcher(
-              duration: Duration(milliseconds: 500),
-              child: GestureDetector(
-                onTap: () {
-                  FocusScopeNode currentFocus = FocusScope.of(context);
+        child: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
 
-                  if (!currentFocus.hasPrimaryFocus) {
-                    currentFocus.unfocus();
-                  }
-                },
-                child: MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  title: 'Login Navigation',
-                  initialRoute: '/',
-                  routes: {
-                    '/': (context) => Login(),
-                    '/signup': (context) => SignUp()
-                  },
-                  theme: ThemeData(
-                    primaryColor: Color(0xFFf38c02),
-                    accentColor: Color(0xFFffbb00),
-                  ),
-                ),
+            if(!currentFocus.hasPrimaryFocus){
+              currentFocus.unfocus();
+            }
+          },
+          child: ChangeNotifierProvider(
+            create: (context) => UserBloc(),
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Login Navigation',
+              initialRoute: '/',
+              routes: {
+                '/': (context) => Login(),
+                '/signup': (context) => SignUp()
+              },
+              theme: ThemeData(
+                primaryColor: Color(0xFFf38c02),
+                accentColor: Color(0xFFffbb00),
               ),
-            )));
+            ),
+          ),
+        ));
   }
 }

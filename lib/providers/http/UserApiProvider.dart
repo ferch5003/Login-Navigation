@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:login_navigation/models/user.dart';
+import 'package:login_navigation/models/course.dart';
 import 'package:dio/dio.dart';
 
 class UserApiProvider {
@@ -30,6 +32,7 @@ class UserApiProvider {
           "password": password,
         },
       );
+      print(response.data);
       return User.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
@@ -44,6 +47,46 @@ class UserApiProvider {
       });
       Map validation = response.data;
       return validation['valid'];
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      throw Exception(error);
+    }
+  }
+
+  Future<List<Course>> getCourses(String username, String token) async {
+    try {
+      Map<String, dynamic> headers = {HttpHeaders.authorizationHeader: token};
+      Response response = await _dio.get('$_endpoint/$username/courses',
+          options: Options(headers: headers));
+      Iterable iterableCourses = response.data;
+      List<Course> coursesList = List<Course>.from(
+          iterableCourses.map((model) => Course.fromJson(model)));
+      return coursesList;
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      throw Exception(error);
+    }
+  }
+
+  Future<Course> createCourse(String username, String token) async {
+    try {
+      Map<String, dynamic> headers = {HttpHeaders.authorizationHeader: token};
+      Response response = await _dio.post('$_endpoint/$username/courses',
+          options: Options(headers: headers));
+      return Course.fromJson(response.data);
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      throw Exception(error);
+    }
+  }
+
+  Future<bool> restartDB(String username, String token) async {
+    try {
+      Map<String, dynamic> headers = {HttpHeaders.authorizationHeader: token};
+      Response response = await _dio.post('$_endpoint/$username/courses',
+          options: Options(headers: headers));
+      Map validation = response.data;
+      return validation['result'];
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
       throw Exception(error);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:login_navigation/screens/widgets/signupWidgets.dart';
+import 'package:login_navigation/screens/widgets/signup/signupWidgets.dart';
 import 'package:login_navigation/widgets/screenGradient.dart';
 import 'package:login_navigation/widgets/customCard.dart';
 

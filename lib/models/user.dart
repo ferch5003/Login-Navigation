@@ -8,7 +8,13 @@ class User {
   final String username;
   final String token;
 
-  User({this.name, this.username, this.token});
+  @JsonKey(name: 'type')
+  final String tokenType;
+
+  @JsonKey(includeIfNull: false)
+  final String error;
+
+  User({this.name, this.username, this.token, this.tokenType, this.error});
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

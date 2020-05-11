@@ -8,8 +8,6 @@ class FieldWidgets {
 
   FieldWidgets(this.context);
 
-  bool _passwordVisible = false;
-
   Widget emailTextField(TextEditingController emailController) {
     return RoundedBox(
       color: Color(0xFFf2f0f7),
