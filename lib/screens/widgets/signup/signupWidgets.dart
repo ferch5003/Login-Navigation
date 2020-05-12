@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:login_navigation/screens/widgets/fieldWidgets.dart';
 import 'package:login_navigation/widgets/roundedBox.dart';
 import 'package:login_navigation/widgets/customInput.dart';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
+import 'package:flutter_progress_button/flutter_progress_button.dart';
 import 'package:login_navigation/providers/blocs/UserBloc.dart';
 import 'package:provider/provider.dart';
 
 class SignupWidgets extends FieldWidgets {
   final GlobalKey<FormState> formKey;
-  final RoundedLoadingButtonController _btnController =
-      new RoundedLoadingButtonController();
 
   SignupWidgets(this.formKey, context) : super(context);
 
@@ -80,14 +78,17 @@ class SignupWidgets extends FieldWidgets {
       TextEditingController password,
       TextEditingController name,
       TextEditingController username}) {
-    return RoundedLoadingButton(
-      controller: _btnController,
+    return ProgressButton(
       color: Theme.of(context).primaryColor,
-      child: Center(
+      borderRadius: 30.0,
+      defaultWidget: Center(
           child: Text(
-        'SUBMIT',
+        'LOG IN',
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       )),
+      progressWidget: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      ),
       onPressed: () async {
         if (formKey.currentState.validate()) {
           await Provider.of<UserBloc>(context, listen: false)
@@ -98,18 +99,15 @@ class SignupWidgets extends FieldWidgets {
                   username: username.text)
               .then((user) {
             clearAll(email, password, name, username);
-            _btnController.success();
             Provider.of<UserBloc>(context, listen: false).setLoggedIn(user);
             Navigator.of(context).pop();
           }).catchError((error) {
-            _btnController.reset();
             showDialog(
                 context: context,
                 builder: (context) {
-                  return customAlertDialog('ERROR', error);
+                  return customAlertDialog('ERROR', error.toString());
                 });
           }).timeout(Duration(seconds: 10), onTimeout: () {
-            _btnController.reset();
             showDialog(
                 context: context,
                 builder: (context) {
@@ -117,8 +115,6 @@ class SignupWidgets extends FieldWidgets {
                       'The service is not accesible now (time > 10 seconds), try again');
                 });
           });
-        } else {
-          _btnController.reset();
         }
       },
     );

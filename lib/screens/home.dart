@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
         labelText: "Create course",
         currentButton: FloatingActionButton(
           heroTag: "add",
-          backgroundColor:  Color(0xFFffbb00),
+          backgroundColor: Color(0xFFffbb00),
           mini: true,
           child: Icon(Icons.add),
           onPressed: () {
@@ -34,9 +34,9 @@ class _HomeState extends State<Home> {
         labelText: "Restart DB",
         currentButton: FloatingActionButton(
           heroTag: "restart",
-          backgroundColor:  Color(0xFFffbb00),
+          backgroundColor: Color(0xFFffbb00),
           mini: true,
-          child: Icon(Icons.menu),
+          child: Icon(Icons.replay),
           onPressed: () {
             Provider.of<UserBloc>(context, listen: false).restartDB();
           },
@@ -47,7 +47,7 @@ class _HomeState extends State<Home> {
         labelText: "Log Out",
         currentButton: FloatingActionButton(
           heroTag: "logout",
-          backgroundColor:  Color(0xFFffbb00),
+          backgroundColor: Color(0xFFffbb00),
           mini: true,
           child: Icon(Icons.power_settings_new),
           onPressed: () {
@@ -69,54 +69,79 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Consumer<UserBloc>(builder: (context, userBloc, child) {
       if (!userBloc.isLogged) {
-        return Login();
+        return AnimatedSwitcher(
+            duration: Duration(milliseconds: 250),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0, 0.25),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              );
+            },
+            child: Login());
       } else {
-        return Scaffold(
-          body: Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Center(
-                    child: Text(
-                  'Courses',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
-                )),
-                FutureBuilder<List<Course>>(
-                    future: userBloc.getCourses(),
-                    builder: (context, snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return CircularProgressIndicator();
-                        default:
-                          if (snapshot.hasData) {
-                            return Expanded(
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: snapshot.data.length,
-                                  itemBuilder: (context, index) {
-                                    Course course = snapshot.data[index];
-                                    return CourseCard(
-                                      course: course,
-                                    );
-                                  }),
-                            );
-                          } else {
-                            return Text('ERROR: ${snapshot.error}');
+        return AnimatedSwitcher(
+          duration: Duration(milliseconds: 250),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, 0.25),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+          child: Scaffold(
+              body: Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.only(top: 10.0),
+                      child: Center(
+                          child: Text(
+                        'Courses',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 30.0),
+                      )),
+                    ),
+                    FutureBuilder<List<Course>>(
+                        future: userBloc.getCourses(),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.waiting:
+                              return CircularProgressIndicator();
+                            default:
+                              if (snapshot.hasData) {
+                                return Expanded(
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: snapshot.data.length,
+                                      itemBuilder: (context, index) {
+                                        Course course = snapshot.data[index];
+                                        return CourseCard(
+                                          course: course,
+                                        );
+                                      }),
+                                );
+                              } else {
+                                return Text('ERROR: ${snapshot.error}');
+                              }
                           }
-                      }
-                    }),
-              ],
-            ),
-          ),
-          floatingActionButton: UnicornDialer(
-            backgroundColor: Colors.black,
-            parentButtonBackground: Color.fromRGBO(255, 255, 255, 0.6),
-            orientation: UnicornOrientation.VERTICAL,
-            parentButton: Icon(Icons.add),
-            childButtons: _childButtons)
+                        }),
+                  ],
+                ),
+              ),
+              floatingActionButton: UnicornDialer(
+                  parentButtonBackground: Colors.white,
+                  orientation: UnicornOrientation.VERTICAL,
+                  parentButton: Icon(Icons.menu),
+                  childButtons: _childButtons)),
         );
       }
     });

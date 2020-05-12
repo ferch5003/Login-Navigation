@@ -32,11 +32,10 @@ class UserApiProvider {
           "password": password,
         },
       );
-      print(response.data);
       return User.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
-      throw Exception(error);
+      throw error;
     }
   }
 
@@ -83,7 +82,7 @@ class UserApiProvider {
   Future<bool> restartDB(String username, String token) async {
     try {
       Map<String, dynamic> headers = {HttpHeaders.authorizationHeader: token};
-      Response response = await _dio.post('$_endpoint/$username/courses',
+      Response response = await _dio.get('$_endpoint/$username/restart',
           options: Options(headers: headers));
       Map validation = response.data;
       return validation['result'];

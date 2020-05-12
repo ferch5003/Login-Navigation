@@ -22,7 +22,7 @@ class Screen extends StatelessWidget {
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);
 
-            if(!currentFocus.hasPrimaryFocus){
+            if (!currentFocus.hasPrimaryFocus) {
               currentFocus.unfocus();
             }
           },

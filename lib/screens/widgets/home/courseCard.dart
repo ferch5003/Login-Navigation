@@ -1,4 +1,7 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:login_navigation/assets/ProjectColors.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:login_navigation/models/course.dart';
 
 class CourseCard extends StatelessWidget {
@@ -8,6 +11,12 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Color> projectColors = ProjectColors().colors;
+
+    Random random = new Random();
+
+    int index = random.nextInt(projectColors.length);
+
     return Container(
       height: 150.0,
       decoration: BoxDecoration(
@@ -25,27 +34,28 @@ class CourseCard extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
-                    color: Color(0xFF7152EE),
+                    color: projectColors[index],
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10.0),
-                        bottomLeft: Radius.circular(10.0))),
+                        topLeft: Radius.circular(20.0),
+                        bottomLeft: Radius.circular(20.0))),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
                       child: Text(
-                        'Topic',
+                        'Professor',
                         style: TextStyle(color: Colors.white, fontSize: 10.0),
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 15.0),
-                      child: Text(
-                        'Mobile Programming',
+                      margin: const EdgeInsets.only(top: 23.0),
+                      child: AutoSizeText(
+                        '${course.professor}',
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold),
+                        maxLines: 2,
                       ),
                     )
                   ],
@@ -86,40 +96,37 @@ class CourseCard extends StatelessWidget {
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 15.0, bottom: 5.0),
-                      child: Text(
+                      child: AutoSizeText(
                         '${course.name}',
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 15.0,
                             fontWeight: FontWeight.bold),
+                        maxLines: 2,
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        'Professor ${course.professor}',
-                        style: TextStyle(color: Colors.black, fontSize: 12.0),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          LayoutBuilder(
-                            builder: (context, constraint) {
-                              return Icon(
-                                Icons.account_circle,
-                                size: 13.0,
-                              );
-                            },
-                          ),
-                          Text(
-                            'STUDENTS: ${course.students}',
-                            style: TextStyle(
-                                fontSize: 13.0, fontWeight: FontWeight.bold),
-                          )
-                        ],
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            LayoutBuilder(
+                              builder: (context, constraint) {
+                                return Icon(
+                                  Icons.account_circle,
+                                  size: 13.0,
+                                );
+                              },
+                            ),
+                            Text(
+                              'STUDENTS: ${course.students}',
+                              style: TextStyle(
+                                  fontSize: 13.0, fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
                       ),
                     )
                   ],

@@ -9,7 +9,7 @@ class UserBloc extends ChangeNotifier {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool _isLogged = false;
   bool _rememberMe = false;
-  User _user;
+  User _user = User();
   List<Course> _coursesList = List<Course>();
 
   User get user => _user;
@@ -21,6 +21,8 @@ class UserBloc extends ChangeNotifier {
     _rememberMe = value;
     notifyListeners();
   }
+
+  // USER LOGIC
 
   void verifyPersistence() async {
     SharedPreferences prefs = await _prefs;
@@ -57,17 +59,64 @@ class UserBloc extends ChangeNotifier {
 
   Future<User> signUp(
       {String email, String password, String name, String username}) async {
-    return _user = await _repository.signUp(email, password, name, username);
+    try {
+      User user = await _repository.signUp(email, password, name, username);
+      return _user = user;
+    } catch (error) {
+      throw error;
+    }
   }
 
   Future<User> logIn({String email, String password}) async {
-    return _user = await _repository.logIn(email, password);
+    try {
+      User user = await _repository.logIn(email, password);
+      return _user = user;
+    } catch (error) {
+      throw error;
+    }
   }
+
+    setLoggedIn(User user) async {
+    SharedPreferences prefs = await _prefs;
+
+    await prefs.setString('name', user.name);
+    await prefs.setString('username', user.username);
+    await prefs.setString('token', user.token);
+    await prefs.setString('tokenType', user.tokenType);
+
+    if (_rememberMe) {
+      await prefs.setBool('rememberMe', true);
+      await prefs.setBool('isLogged', true);
+    }
+
+    _rememberMe = false;
+    _isLogged = true;
+
+    notifyListeners();
+  }
+
+  logOut() async {
+    SharedPreferences prefs = await _prefs;
+
+    await prefs.setString('name', '');
+    await prefs.setString('username', '');
+    await prefs.setString('token', '');
+    await prefs.setString('tokenType', '');
+    await prefs.setBool('isLogged', false);
+    prefs.setBool('rememberMe', false);
+
+    _isLogged = false;
+
+    notifyListeners();
+  }
+  
+  // COURSES LOGIC
 
   Future<List<Course>> getCourses() async {
     final String username = user.username;
     final String token = '${user.tokenType} ${user.token}';
     List<Course> _coursesList = await _repository.getCourses(username, token);
+    _coursesList.sort((a,b) => a.id.compareTo(b.id));
     return _coursesList;
   }
 
@@ -90,36 +139,4 @@ class UserBloc extends ChangeNotifier {
     return result;
   }
 
-  setLoggedIn(User user) async {
-    SharedPreferences prefs = await _prefs;
-
-    await prefs.setString('name', user.name);
-    await prefs.setString('username', user.username);
-    await prefs.setString('token', user.token);
-    await prefs.setString('tokenType', user.tokenType);
-
-    if (_rememberMe) {
-      await prefs.setBool('rememberMe', true);
-      await prefs.setBool('isLogged', true);
-    }
-
-    _isLogged = true;
-
-    notifyListeners();
-  }
-
-  logOut() async {
-    SharedPreferences prefs = await _prefs;
-
-    await prefs.setString('name', '');
-    await prefs.setString('username', '');
-    await prefs.setString('token', '');
-    await prefs.setString('tokenType', '');
-    await prefs.setBool('isLogged', false);
-    prefs.setBool('rememberMe', false);
-
-    _isLogged = false;
-
-    notifyListeners();
-  }
 }

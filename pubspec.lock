@@ -29,6 +29,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.0"
+  auto_size_text:
+    dependency: "direct main"
+    description:
+      name: auto_size_text
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -174,6 +181,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_progress_button:
+    dependency: "direct main"
+    description:
+      name: flutter_progress_button
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.4"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -394,20 +408,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  rounded_loading_button:
-    dependency: "direct main"
-    description:
-      name: rounded_loading_button
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.5"
-  rxdart:
-    dependency: transitive
-    description:
-      name: rxdart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.24.0"
   shared_preferences:
     dependency: "direct main"
     description:
